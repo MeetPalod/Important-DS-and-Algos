@@ -1,0 +1,32 @@
+1. Using DFS - from a random node, find the node farthest to it. Then from that node, find the distance of farthest node to it. This is the ans.
+2. 
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+
+#include <bits/stdc++.h>
+using namespace std;
+int maxD , maxNode;
+int vis[100001];
+vector<int> ar[100001] ;
+ 
+void dfs(int n  , int d){
+	
+	vis[n] = 1;
+	if(d>maxD) maxD = d , maxNode = n;
+	for(int i : ar[n])
+	if(!vis[i])
+	dfs( i, d+1);
+}
+int main() {
+	int n,a,b ;
+	cin>>n;
+	for(int i= 0 ; i<n ; i++)
+	cin>>a>>b , ar[a].push_back(b) , ar[b].push_back(a);
+	
+	dfs(1,0);
+	maxD = -1;
+	for(int i = 0 ; i< n ; i++) vis[i] = 0;
+	dfs(maxNode , 0);
+	return 0;
+} 
