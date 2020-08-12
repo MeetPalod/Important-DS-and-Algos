@@ -1,3 +1,5 @@
+//////To get the answer in sorted order, use priority queue : priority_queue<int, vector<int>, greater<int>> q;
+
 #include<bits/stdc++.h>
 using namespace std;
  
