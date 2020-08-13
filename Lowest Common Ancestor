@@ -1,0 +1,175 @@
+///////////BINARY LIFTING////////////////////
+////////////// Preprocessing nlogn , query logn.///////////////////
+#include<bits/stdc++.h>
+using namespace std;
+
+vector<int> ar[1001];
+const int maxN = 10;
+int level[1001] , LCA[1001][maxN+1];
+
+
+void dfs(int node , int lvl , int par)
+{
+	level[node] = lvl;
+	LCA[node][0] = par;
+	
+	for(int child : ar[node])
+	if(child != par)
+	{
+		dfs(child , lvl+1 , node);
+	}
+}
+
+
+void init(int n)
+{
+	dfs(1 , 0 , -1);
+	
+	for(int i=1;i<=maxN;i++)
+	{
+		for(int j=1;j<=n;j++)
+		if(LCA[j][i-1] != -1)
+		{
+			int par = LCA[j][i-1];
+			LCA[j][i] = LCA[par][i-1];
+		}
+	}
+}
+
+int getLCA(int a , int b)
+{
+	if(level[b] < level[a]) swap(a , b);
+	
+	int d = level[b] - level[a];
+	
+	while(d > 0)
+	{
+		int i = log2(d);
+		b = LCA[b][i];
+		
+		d -= 1 << i;
+	}
+	
+	if(a == b) return a;
+	
+	for(int i=maxN;i>=0;i--)
+	if(LCA[a][i] != -1 && (LCA[a][i] != LCA[b][i]))
+	{
+		a = LCA[a][i] , b = LCA[b][i];
+	}
+	
+	return LCA[a][0];
+}
+
+int main()
+{
+	int n ,a , b , q;
+	
+	cin>>n;
+	
+	for(int i=1;i<=n;i++)
+	{
+		for(int j=0;j<=maxN;j++)
+		LCA[i][j] = -1;
+	}
+	
+	for(int i=1;i<n;i++)
+	cin>>a>>b , ar[a].push_back(b) , ar[b].push_back(a);
+	
+	init(n);
+	
+	cin>>q;
+	
+	while(q--)
+	{
+		cin>>a>>b;
+		cout<<getLCA(a , b)<<endl;
+	}
+}
+
+
+////////////////////////PARENT POINTER///////////////////////////////////
+// C++ program to find lowest common ancestor using parent pointer 
+#include <bits/stdc++.h> 
+using namespace std; 
+
+struct Node 
+{ 
+	Node *left, *right, *parent; 
+	int key; 
+}; 
+
+// A utility function to create a new BST node 
+Node *newNode(int item) 
+{ 
+	Node *temp = new Node; 
+	temp->key = item; 
+	temp->parent = temp->left = temp->right = NULL; 
+	return temp; 
+} 
+
+Node *insert(Node *node, int key) 
+{ 
+	/* If the tree is empty, return a new node */
+	if (node == NULL) return newNode(key); 
+
+	/* Otherwise, recur down the tree */
+	if (key < node->key) 
+	{ 
+		node->left = insert(node->left, key); 
+		node->left->parent = node; 
+	} 
+	else if (key > node->key) 
+	{ 
+		node->right = insert(node->right, key); 
+		node->right->parent = node; 
+	} 
+
+	return node; 
+} 
+Node *LCA(Node *n1, Node *n2) 
+{ 
+map <Node *, bool> ancestors; 
+
+// Insert n1 and all its ancestors in map 
+while (n1 != NULL) 
+{ 
+	ancestors[n1] = true; 
+	n1 = n1->parent; 
+} 
+while (n2 != NULL) 
+{ 
+	if (ancestors.find(n2) != ancestors.end()) 
+		return n2; 
+	n2 = n2->parent; 
+} 
+
+return NULL; 
+} 
+
+// Driver method to test above functions 
+int main(void) 
+{ 
+	Node * root = NULL; 
+
+	root = insert(root, 20); 
+	root = insert(root, 8); 
+	root = insert(root, 22); 
+	root = insert(root, 4); 
+	root = insert(root, 12); 
+	root = insert(root, 10); 
+	root = insert(root, 14); 
+
+	Node *n1 = root->left->right->left; 
+	Node *n2 = root->left; 
+	Node *lca = LCA(n1, n2); 
+
+	printf("LCA of %d and %d is %d \n", n1->key, n2->key, lca->key); 
+
+	return 0; 
+} 
+
+/*Note : The above implementation uses insert of Binary Search Tree to create a Binary Tree, but the function LCA is for any Binary Tree (not necessarily a Binary Search Tree).
+Time Complexity : O(h) where h is height of Binary Tree if we use hash table to implement the solution (Note that the above solution uses map which takes O(Log h) time to insert and find). So the time complexity of above implementation is O(h Log h).
+
+Auxiliary Space : O(h)*/
