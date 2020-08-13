@@ -1,0 +1,78 @@
+#include <bits/stdc++.h>
+#define F first
+#define S second
+#define pii pair<ll,ll>
+#define piii pair<ll,pair<ll,ll> >
+#define mp make_pair
+#define pb push_back
+#define ll long long
+#define ull unsigned long long
+using namespace std;
+
+const ll mod=1e9+7;
+vector<pair<ll,ll> > adj[100005];
+ll par[100005];
+ll dist[100005];
+
+void djk()
+{
+	par[1] = 1;
+	dist[1] = 0;
+	priority_queue<pair<ll,ll>, vector<pair<ll,ll> >, greater<pair<ll,ll> > > pq;
+	pq.push(mp(0,1));
+	while(!pq.empty())
+	{
+		//cout<<"bug";
+		pair<ll,ll> p = pq.top();
+		pq.pop();
+		ll u = p.S;
+		for(ll i=0;i<adj[u].size();i++)
+		{
+			ll x = adj[u][i].F;
+			ll wt = adj[u][i].S;
+            if(dist[u] + wt < dist[x])
+			{
+				//cout<<u<<" "<<x<<" "<<endl;
+				dist[x] = dist[u] + wt;
+				par[x] = u;
+				pq.push(mp(dist[x], x));
+			}
+		}
+	}
+}
+
+int main()
+{
+	ll n,m,a,b,c;
+	cin>>n>>m;
+	for(ll i=0;i<m;i++)
+	{
+		cin>>a>>b>>c;
+		adj[a].pb(mp(b,c));
+		adj[b].pb(mp(a,c));
+	}
+	for(ll i=1;i<=n;i++)
+		dist[i]=mod;
+	djk();
+	if(dist[n]==mod)
+	{
+		cout<<-1;
+	}
+	else
+	{
+		ll node = n;
+		stack<ll>s;
+		//for(ll i=1;i<=n;i++) cout<<i<<" "<<par[i]<<endl;
+		while(node!=1)
+		{
+			s.push(node);
+			node = par[node];
+		}
+		s.push(1);
+		while(!s.empty())
+		{
+			cout<<s.top()<<" ";
+			s.pop();
+		}
+	}
+}
