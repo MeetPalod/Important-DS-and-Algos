@@ -7,4 +7,5 @@
 
 # Helpful Tips 
 1. If it is a grid question,check if dfs or bfs can help.
-2. 
+2. While taking mod, use (n+mod)%mod .  It will take care of negative values of n.
+3. 
