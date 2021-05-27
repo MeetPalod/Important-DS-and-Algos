@@ -1,0 +1,160 @@
+#include<bits/stdc++.h> 
+using namespace std;	
+
+bool check_palindrome(node* head)
+{
+    node* slow= head;
+    stack <int> s;     
+    while(slow != NULL){ 
+       s.push(slow->data); 
+       slow = slow->next;
+     } 
+      while(head != NULL ){ 
+      int i=s.top(); 
+        s.pop(); 
+        if(head -> data != i){ 
+            return false; 
+      } 
+      head=head->next;
+    } 
+  
+    return true; 
+}
+
+node* rev_linkedlist_itr(node* head)
+{
+    node *temp = head;
+    node *prev = NULL;
+    node *curr = head;
+    
+    while(curr != NULL){
+        temp = temp -> next;
+        curr -> next = prev;
+        prev = curr;
+        curr = temp;
+    }
+    head = prev;
+    return head;
+}
+
+int length(Node *head) {
+   
+    int count = 0; // Initialize count  
+    Node* current = head; // Initialize current  
+    while (current != NULL)  
+    {  
+        count++;  
+        current = current->next;  
+    }  
+    return count;  
+    
+}
+
+
+Node* insertNodeRec(Node *head, int i, int data) {
+   
+     if(i==0)
+    {
+        Node *p=new Node(data);
+        p->next=head;
+        head =p;
+        return p;
+    }
+    
+    if(head==NULL || i<0)
+      return head;
+    
+   
+    head->next=insertNodeRec(head->next,i-1,data);
+   
+    return head;
+}
+
+Node* deleteNode(Node *head, int i) {
+    Node *temp = head;
+    Node *prev = NULL;
+    int count = 0;
+    
+    if(i == 0){
+        head = temp -> next;
+        delete(temp);
+    }
+    //temp = head;
+    else{
+        while( i != count){
+            prev = temp;
+            temp = temp -> next;
+            count++;
+        }
+        
+        if(temp != NULL){
+            prev -> next = temp -> next;
+            delete (temp);
+        }
+    }
+    return head; 
+}
+
+node* mergeTwoLLs(node *head1, node *head2) {
+    
+
+    node *p=NULL,*q=NULL;
+    if(head1->data<head2->data)
+    {
+        p=head1;
+        q=head1;
+        head1=head1->next;
+        
+        
+    }
+    else if(head1->data>=head2->data)
+    {
+        p=head2;
+        q=head2;
+        head2=head2->next;
+       
+        
+    }
+    while(head1&&head2)
+    {
+       if(head1->data<head2->data)
+       {
+           q->next=head1;
+           q=head1;
+           head1=head1->next;
+           q->next=NULL;
+       }
+    else if(head1->data>=head2->data)
+       {
+           q->next=head2;
+           q=head2;
+           head2=head2->next;
+           q->next=NULL;
+       }
+    }
+    if(head1)
+        q->next=head1;
+    if(head2)
+        q->next=head2;
+    
+    
+    return p;
+}
+
+node* mergeSort(node *head) {
+   if(head==NULL|| head->next==NULL)
+        {return head;}
+    node *p=head;
+    for(int i=1;i<length(head)/2;i++)
+    {
+        p=p->next;
+    }
+    node *head1=p->next;
+    p->next=NULL;
+    
+  head=mergeSort(head);
+    head1=mergeSort(head1);
+    
+    return mergeTwoLLs(head,head1);
+    
+}
